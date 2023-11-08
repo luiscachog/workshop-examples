@@ -1,20 +1,19 @@
 ---
- - hosts: all
-   vars:
-     - repo_url: https://github.com/luiscachog/csv_reports.git
-     - tmp_repo_directory: /tmp/csv_reports
-     - git_user_name: "Luis Cacho"
-     - git_email: "luiscachog@gmail.com"
-   tasks:
-   
-   - name: Clone a github repository
-     ansible.builtin.git:
-       repo: "{{ repo_url }}"
-       dest: "{{ tmp_repo_directory }}"
-       clone: yes
-       update: yes
-     delegate_to: localhost
-
+- hosts: all
+  vars:
+    - repo_url: https://github.com/luiscachog/csv_reports.git
+    - tmp_repo_directory: /tmp/csv_reports
+    - git_user_name: "Luis Cacho"
+    - git_email: "luiscachog@gmail.com"
+  tasks:
+  - name: Clone a github repository
+    ansible.builtin.git:
+      repo: "{{ repo_url }}"
+      dest: "{{ tmp_repo_directory }}"
+      clone: yes
+      update: yes
+    delegate_to: localhost
+    
   - name: Set fact for unreachable hosts
     ansible.builtin.set_fact:
       unreachable_hosts: "{{ ansible_play_hosts_all | difference(ansible_play_hosts) }}"
