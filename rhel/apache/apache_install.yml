@@ -3,6 +3,10 @@
   hosts: web
   gather_facts: false
   tasks:
+    - name: Check if hosts are reachable
+      ansible.builtin.ping:
+      ignore_errors: true
+      
     - block:
       - ansible.builtin.debug:
           var: ansible_play_hosts_all
