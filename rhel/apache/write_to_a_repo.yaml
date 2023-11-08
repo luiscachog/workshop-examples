@@ -43,6 +43,8 @@
       chdir: "{{ tmp_repo_directory }}"
     ignore_errors: true
     register: output
+    delegate_to: localhost
+    run_once: true
     failed_when: >
       output.msg != "" and
       ("error" in output.msg or
