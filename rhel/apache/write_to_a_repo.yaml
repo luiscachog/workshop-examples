@@ -1,10 +1,10 @@
 ---
 - hosts: all
   vars:
-    - repo_url: https://github.com/luiscachog/csv_reports.git
-    - tmp_repo_directory: /tmp/csv_reports
-    - git_user_name: "Luis Cacho"
-    - git_email: "luiscachog@gmail.com"
+    repo_url: https://github.com/luiscachog/csv_reports.git
+    tmp_repo_directory: /tmp/csv_reports
+    git_user_name: "Luis Cacho"
+    git_email: "luiscachog@gmail.com"
   tasks:
   - name: Clone a github repository
     ansible.builtin.git:
