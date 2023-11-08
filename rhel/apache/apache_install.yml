@@ -4,27 +4,27 @@
   gather_facts: false
   tasks:
     - block:
-        - ansible.builtin.debug:
-            var: ansible_play_hosts_all
-        - ansible.builtin.debug:
-            var: ansible_play_hosts
-        - ansible.builtin.set_fact:
-            down: "{{ ansible_play_hosts_all|difference(ansible_play_hosts)|join('\n') }}"
-        - ansible.builtin.debug:
-            var: down
+      - ansible.builtin.debug:
+          var: ansible_play_hosts_all
+      - ansible.builtin.debug:
+          var: ansible_play_hosts
+      - ansible.builtin.set_fact:
+          down: "{{ ansible_play_hosts_all|difference(ansible_play_hosts)|join('\n') }}"
+      - ansible.builtin.debug:
+        var: down
       run_once: true
-            
+  
     - name: Set fact for unreachable hosts
       ansible.builtin.set_fact:
         unreachable_hosts: "{{ ansible_play_hosts_all | difference(ansible_play_batch) }}"
       run_once: true
-
+      
     - name: Print unreachable hosts
       ansible.builtin.debug:
         var: unreachable_hosts
       when: unreachable_hosts is defined and unreachable_hosts | length > 0
       run_once: true
-
+      
     - name: Write unreachable hosts to a file
       ansible.builtin.copy:
         content: "{{ unreachable_hosts | join('\n') }}"
@@ -34,31 +34,31 @@
       when: unreachable_hosts is defined and unreachable_hosts | length > 0
       run_once: true
       
-  - name: latest Apache version installed
-    yum:
-      name: httpd
-      state: latest
+    - name: latest Apache version installed
+      yum:
+        name: httpd
+        state: latest
 
-  - name: latest firewalld version installed
-    yum:
-      name: firewalld
-      state: latest
+    - name: latest firewalld version installed
+      yum:
+        name: firewalld
+        state: latest
 
-  - name: firewalld enabled and running
-    service:
-      name: firewalld
-      enabled: true
-      state: started
+    - name: firewalld enabled and running
+      service:
+        name: firewalld
+        enabled: true
+        state: started
 
-  - name: firewalld permits http service
-    firewalld:
-      service: http
-      permanent: true
-      state: enabled
-      immediate: yes
+    - name: firewalld permits http service
+      firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: yes
 
-  - name: Apache enabled and running
-    service:
-      name: httpd
-      enabled: true
-      state: started
+    - name: Apache enabled and running
+      service:
+        name: httpd
+        enabled: true
+        state: started
