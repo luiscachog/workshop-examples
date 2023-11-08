@@ -13,7 +13,7 @@
        dest: "{{ tmp_repo_directory }}"
        clone: yes
        update: yes
-    delegate_to: localhost
+     delegate_to: localhost
 
     - name: Set fact for unreachable hosts
       ansible.builtin.set_fact:
