@@ -42,6 +42,8 @@
       yum:
         name: httpd
         state: latest
+        when: ansible_hostname in ansible_play_hosts
+
 
     - name: latest firewalld version installed
       yum:
