@@ -27,7 +27,7 @@
     - name: Print unreachable hosts
       ansible.builtin.debug:
         var: unreachable_hosts
-      when: unreachable_hosts is defined and unreachable_hosts | length > 0
+      # when: unreachable_hosts is defined and unreachable_hosts | length > 0
       run_once: true
       
     - name: Write unreachable hosts to a file
