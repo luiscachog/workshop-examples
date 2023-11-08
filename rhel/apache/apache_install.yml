@@ -1,8 +1,39 @@
 ---
-- name: Apache server installed
+- name: Check host reachability and record any unreachable hosts
   hosts: web
-
+  gather_facts: false
   tasks:
+    - block:
+        - ansible.builtin.debug:
+            var: ansible_play_hosts_all
+        - ansible.builtin.debug:
+            var: ansible_play_hosts
+        - ansible.builtin.set_fact:
+            down: "{{ ansible_play_hosts_all|difference(ansible_play_hosts)|join('\n') }}"
+        - ansible.builtin.debug:
+            var: down
+      run_once: true
+            
+    - name: Set fact for unreachable hosts
+      ansible.builtin.set_fact:
+        unreachable_hosts: "{{ ansible_play_hosts_all | difference(ansible_play_batch) }}"
+      run_once: true
+
+    - name: Print unreachable hosts
+      ansible.builtin.debug:
+        var: unreachable_hosts
+      when: unreachable_hosts is defined and unreachable_hosts | length > 0
+      run_once: true
+
+    - name: Write unreachable hosts to a file
+      ansible.builtin.copy:
+        content: "{{ unreachable_hosts | join('\n') }}"
+        dest: "/tmp/result.txt"
+        mode: '0644'
+      delegate_to: localhost
+      when: unreachable_hosts is defined and unreachable_hosts | length > 0
+      run_once: true
+      
   - name: latest Apache version installed
     yum:
       name: httpd
