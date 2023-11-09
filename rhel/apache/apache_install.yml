@@ -9,12 +9,8 @@
         - wait_for_connection:
             timeout: "{{ connection_timeout }}"
       rescue:
-        - set_fact:
-            reachable: false
         - meta: clear_host_errors
         - meta: end_host
-    - set_fact:
-        reachable: true
 
     - add_host:
         name: '{{ item }}'
