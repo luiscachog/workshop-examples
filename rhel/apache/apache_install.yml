@@ -19,7 +19,7 @@
     - add_host:
         name: '{{ item }}'
         groups: 'reachable'
-      loop: "{{ hostvars|dict2items|json_query('[?value.reachable].key') }}"
+      loop: "{{ ansible_play_hosts }}"
       run_once: true
 
 - hosts: "{{ groups.reachable.0 }}"
