@@ -6,8 +6,7 @@
     connection_timeout: "10"
   tasks:
     - block:
-        - wait_for_connection:
-            timeout: "{{ connection_timeout }}"
+      - ansible.builtin.setup:
       rescue:
         - meta: clear_host_errors
         - meta: end_host
