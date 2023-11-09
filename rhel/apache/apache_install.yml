@@ -31,3 +31,8 @@
       yum:
         name: nginx
         state: latest
+        
+    - name: latest mariadb version installed
+      yum:
+        name: mariadb
+        state: latest
