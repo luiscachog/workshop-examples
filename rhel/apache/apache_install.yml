@@ -26,3 +26,8 @@
   tasks:
     - debug:
         msg: "{{ inventory_hostname }}"
+
+    - name: latest Apache version installed
+      yum:
+        name: httpd
+        state: latest
