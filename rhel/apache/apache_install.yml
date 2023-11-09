@@ -15,7 +15,7 @@
       - ansible.builtin.debug:
           var: ansible_play_hosts
       - ansible.builtin.set_fact:
-          down: "{{ ansible_play_hosts_all|difference(ansible_play_hosts)|join('\n') }}"
+          down: "{{ groups['all'] | difference(ansible_play_hosts)}}"
       - ansible.builtin.debug:
           var: down
       run_once: true
@@ -47,7 +47,7 @@
       yum:
         name: httpd
         state: latest
-        when: ansible_hostname not in down
+        when: inventory_hostname not in down
 
 
     - name: latest firewalld version installed
