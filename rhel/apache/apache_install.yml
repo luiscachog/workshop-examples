@@ -4,14 +4,10 @@
   gather_facts: false
   tasks:
     - name: Check if hosts are reachable
-      ansible.builtin.ping:
+      ansible.builtin.setup:
       ignore_errors: true
-      register: ping
-
-    - name: debug ping
-      ansible.builtin.debug:
-          var: ping
-    
+      ignore_unreachable: true
+      run_once: true
       
     - block:
       - ansible.builtin.debug:
