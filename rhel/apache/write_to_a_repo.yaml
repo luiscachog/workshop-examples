@@ -13,6 +13,7 @@
       clone: yes
       update: yes
     delegate_to: localhost
+    run_once: true
     
   - name: Set fact for unreachable hosts
     ansible.builtin.set_fact:
