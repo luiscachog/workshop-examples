@@ -1,7 +1,7 @@
 ---
 - name: Check host reachability and record any unreachable hosts
   hosts: web
-  gather_facts: false
+  gather_facts: true
   tasks:
     - name: Check if hosts are reachable using setup
       ansible.builtin.setup:
