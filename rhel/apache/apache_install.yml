@@ -1,83 +1,28 @@
 ---
-- name: Check host reachability and record any unreachable hosts
-  hosts: web
-  gather_facts: true
+- name: Test reachable hosts
+  hosts: all
+  gather_facts: false
+  vars:
+    connection_timeout: "10"
   tasks:
-    - name: Check if hosts are reachable using setup
-      ansible.builtin.setup:
-      ignore_errors: true
-      ignore_unreachable: true
-      run_once: true
-
-    - name: Check if hosts are reachable using ping
-      ansible.builtin.ping:
-      ignore_errors: true
-      ignore_unreachable: true
-      run_once: true
-      
     - block:
-      - ansible.builtin.debug:
-          var: ansible_play_hosts_all
-      - ansible.builtin.debug:
-          var: ansible_play_hosts
-      - ansible.builtin.debug:
-          var: ansible_play_batch
-      - ansible.builtin.set_fact:
-          down: "{{ groups['all'] | difference(ansible_play_hosts)}}"
-      - ansible.builtin.debug:
-          var: down
-      run_once: true
-  
-    - name: Set fact for unreachable hosts
-      ansible.builtin.set_fact:
-        unreachable_hosts: "{{ ansible_play_hosts_all | difference(ansible_play_batch) }}"
-      run_once: true
-      
-    - name: Print unreachable hosts
-      ansible.builtin.debug:
-        var: unreachable_hosts
-      # when: unreachable_hosts is defined and unreachable_hosts | length > 0
-      run_once: true
-      
-    - name: Write unreachable hosts to a file
-      ansible.builtin.copy:
-        content: "{{ unreachable_hosts | join('\n') }}"
-        dest: "/tmp/result.txt"
-        mode: '0644'
-      delegate_to: localhost
-      when: unreachable_hosts is defined and unreachable_hosts | length > 0
+        - wait_for_connection:
+            timeout: "{{ connection_timeout }}"
+      rescue:
+        - set_fact:
+            reachable: false
+        - meta: clear_host_errors
+        - meta: end_host
+    - set_fact:
+        reachable: true
+
+    - add_host:
+        name: '{{ item }}'
+        groups: 'reachable'
+      loop: "{{ hostvars|dict2items|json_query('[?value.reachable].key') }}"
       run_once: true
 
-    - ansible.builtin.debug:
-        var: ansible_hostname
-          
-    - name: latest Apache version installed
-      yum:
-        name: httpd
-        state: latest
-        when: inventory_hostname not in down
-
-
-    - name: latest firewalld version installed
-      yum:
-        name: firewalld
-        state: latest
-
-    - name: firewalld enabled and running
-      service:
-        name: firewalld
-        enabled: true
-        state: started
-
-    - name: firewalld permits http service
-      firewalld:
-        service: http
-        permanent: true
-        state: enabled
-        immediate: yes
-
-    - name: Apache enabled and running
-      service:
-        name: httpd
-        enabled: true
-        state: started
+- hosts: "{{ groups.reachable.0 }}"
+  tasks:
+    - debug:
+        msg: "{{ inventory_hostname }}"
