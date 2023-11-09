@@ -3,8 +3,14 @@
   hosts: web
   gather_facts: false
   tasks:
-    - name: Check if hosts are reachable
+    - name: Check if hosts are reachable using setup
       ansible.builtin.setup:
+      ignore_errors: true
+      ignore_unreachable: true
+      run_once: true
+
+    - name: Check if hosts are reachable using ping
+      ansible.builtin.ping:
       ignore_errors: true
       ignore_unreachable: true
       run_once: true
@@ -14,6 +20,8 @@
           var: ansible_play_hosts_all
       - ansible.builtin.debug:
           var: ansible_play_hosts
+      - ansible.builtin.debug:
+          var: ansible_play_batch
       - ansible.builtin.set_fact:
           down: "{{ groups['all'] | difference(ansible_play_hosts)}}"
       - ansible.builtin.debug:
