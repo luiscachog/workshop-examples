@@ -7,6 +7,9 @@
   tasks:
     - block:
       - ansible.builtin.setup:
+        ignore_errors: true
+        ignore_unreachable: true
+
       rescue:
         - meta: clear_host_errors
         - meta: end_host
